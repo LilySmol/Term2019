@@ -47,12 +47,12 @@ namespace TErm.Helpers.DataBase
         /// </summary>
         public static void insertUser(string name, string token)
         {
-            SQLiteConnection connection = new SQLiteConnection(connectionString);
+            SQLiteConnection connection = new SQLiteConnection(connectionString);  
             SQLiteCommand command = new SQLiteCommand("INSERT INTO User(name, token) VALUES('" + name + "', '" + token + "')", connection);
             connection.Open();
             command.ExecuteNonQuery();
             connection.Close();
-            connection.Dispose();
+            connection.Dispose();            
         }
 
         /// <summary>

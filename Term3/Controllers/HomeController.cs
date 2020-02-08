@@ -12,6 +12,7 @@ using TErm.Helpers.Clustering;
 using NLog;
 using TErm.Helpers.DataBase;
 using Term3.Helpers.DataBase;
+using System.Web.UI;
 
 namespace TErm.Controllers
 {
@@ -52,6 +53,7 @@ namespace TErm.Controllers
             }  
             else
             {
+                Response.Write("<script>alert('Неверное имя пользователя или токен')</script>");
                 return View();
             }       
             return RedirectToAction("Projects", "Project", new { userID = userId});

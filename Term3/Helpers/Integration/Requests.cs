@@ -16,8 +16,8 @@ namespace TErm.Helpers.Integration
         /// </summary>
         protected string get(string privateToken, string url)
         {
-            //try
-            //{
+            try
+            {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "GET";
                 request.ContentType = "application/json; charset=utf-8";
@@ -33,13 +33,13 @@ namespace TErm.Helpers.Integration
                     }
                 }
                 return responseToString;
-            //}
-            //catch (WebException e)
-            //{
-            //    Logger logger = LogManager.GetCurrentClassLogger();
-            //    logger.Error(e.ToString());
-            //    return "";
-            //}
+            }
+            catch (WebException e)
+            {
+                Logger logger = LogManager.GetCurrentClassLogger();
+                logger.Error(e.ToString());
+                return "";
+            }
         }
     }
 }
