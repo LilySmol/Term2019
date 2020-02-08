@@ -1,5 +1,0 @@
-2020/02/08 19:56:53.463: System.Net.WebException: Удаленный сервер возвратил ошибку: (401) Несанкционированный.
-   в System.Net.HttpWebRequest.GetResponse()
-   в TErm.Helpers.Integration.Requests.get(String privateToken, String url) в D:\VisualStudio\Term2019\Term3\Helpers\Integration\Requests.cs:строка 26
-2020/02/08 19:56:53.564: System.NullReferenceException: Ссылка на объект не указывает на экземпляр объекта.
-   в TErm.Helpers.Integration.GitLabParser.getProjectsListByPrivateToken(String privateToken, String userName) в D:\VisualStudio\Term2019\Term3\Helpers\Integration\GitLabParser.cs:строка 30
