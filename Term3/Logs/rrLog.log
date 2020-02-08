@@ -1216,3 +1216,66 @@ UNIQUE constraint failed: Project.projectID
 2019/10/12 19:46:03.285: Задача: авторизация Oтносится к кластеру: Авторизация по email
 2019/10/12 19:46:03.285: Задача: подсчет стоимости Oтносится к кластеру: Вывести магазины
 2019/10/12 19:46:03.285: Задача: вычет Oтносится к кластеру: Вывести магазины
+2020/02/08 19:09:11.115: code = Constraint (19), message = System.Data.SQLite.SQLiteException (0x800027AF): constraint failed
+UNIQUE constraint failed: Project.projectID
+   в System.Data.SQLite.SQLite3.Reset(SQLiteStatement stmt)
+   в System.Data.SQLite.SQLite3.Step(SQLiteStatement stmt)
+   в System.Data.SQLite.SQLiteDataReader.NextResult()
+   в System.Data.SQLite.SQLiteDataReader..ctor(SQLiteCommand cmd, CommandBehavior behave)
+   в System.Data.SQLite.SQLiteCommand.ExecuteReader(CommandBehavior behavior)
+   в System.Data.SQLite.SQLiteCommand.ExecuteNonQuery(CommandBehavior behavior)
+   в System.Data.SQLite.SQLiteCommand.ExecuteNonQuery()
+   в TErm.Helpers.DataBase.DataBaseRequest.insertProject(Int32 projectId, String description, String name, Int32 userId) в D:\VisualStudio\Term2019\Term3\Helpers\DataBase\DataBaseRequests.cs:строка 66
+   в Term3.Helpers.DataBase.DataBaseHelper.addProjectsAndIssues(Int32 userId) в D:\VisualStudio\Term2019\Term3\Helpers\DataBase\DataBaseHelper.cs:строка 59
+   в Term3.Helpers.DataBase.DataBaseHelper.addUserData(UserModel user) в D:\VisualStudio\Term2019\Term3\Helpers\DataBase\DataBaseHelper.cs:строка 51
+   в TErm.Controllers.HomeController.Index(UserModel person) в D:\VisualStudio\Term2019\Term3\Controllers\HomeController.cs:строка 50
+   в lambda_method(Closure , ControllerBase , Object[] )
+   в System.Web.Mvc.ActionMethodDispatcher.Execute(ControllerBase controller, Object[] parameters)
+   в System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters)
+   в System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters)
+   в System.Web.Mvc.Async.AsyncControllerActionInvoker.<BeginInvokeSynchronousActionMethod>b__39(IAsyncResult asyncResult, ActionInvocation innerInvokeState)
+   в System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`2.CallEndDelegate(IAsyncResult asyncResult)
+   в System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   в System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethod(IAsyncResult asyncResult)
+   в System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3d()
+   в System.Web.Mvc.Async.AsyncControllerActionInvoker.AsyncInvocationWithFilters.<>c__DisplayClass46.<InvokeActionMethodFilterAsynchronouslyRecursive>b__3f()
+   в System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass33.<BeginInvokeActionMethodWithFilters>b__32(IAsyncResult asyncResult)
+   в System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`1.CallEndDelegate(IAsyncResult asyncResult)
+   в System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   в System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeActionMethodWithFilters(IAsyncResult asyncResult)
+   в System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<>c__DisplayClass2b.<BeginInvokeAction>b__1c()
+   в System.Web.Mvc.Async.AsyncControllerActionInvoker.<>c__DisplayClass21.<BeginInvokeAction>b__1e(IAsyncResult asyncResult)
+   в System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResult`1.CallEndDelegate(IAsyncResult asyncResult)
+   в System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   в System.Web.Mvc.Async.AsyncControllerActionInvoker.EndInvokeAction(IAsyncResult asyncResult)
+   в System.Web.Mvc.Controller.<BeginExecuteCore>b__1d(IAsyncResult asyncResult, ExecuteCoreState innerState)
+   в System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   в System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   в System.Web.Mvc.Controller.EndExecuteCore(IAsyncResult asyncResult)
+   в System.Web.Mvc.Controller.<BeginExecute>b__15(IAsyncResult asyncResult, Controller controller)
+   в System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   в System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   в System.Web.Mvc.Controller.EndExecute(IAsyncResult asyncResult)
+   в System.Web.Mvc.Controller.System.Web.Mvc.Async.IAsyncController.EndExecute(IAsyncResult asyncResult)
+   в System.Web.Mvc.MvcHandler.<BeginProcessRequest>b__5(IAsyncResult asyncResult, ProcessRequestState innerState)
+   в System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncVoid`1.CallEndDelegate(IAsyncResult asyncResult)
+   в System.Web.Mvc.Async.AsyncResultWrapper.WrappedAsyncResultBase`1.End()
+   в System.Web.Mvc.MvcHandler.EndProcessRequest(IAsyncResult asyncResult)
+   в System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.EndProcessRequest(IAsyncResult result)
+   в System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   в System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+2020/02/08 19:33:48.089: System.Net.WebException: Удаленный сервер возвратил ошибку: (401) Несанкционированный.
+   в System.Net.HttpWebRequest.GetResponse()
+   в TErm.Helpers.Integration.Requests.get(String privateToken, String url) в D:\VisualStudio\Term2019\Term3\Helpers\Integration\Requests.cs:строка 26
+2020/02/08 19:33:48.186: System.NullReferenceException: Ссылка на объект не указывает на экземпляр объекта.
+   в TErm.Helpers.Integration.GitLabParser.getProjectsListByPrivateToken(String privateToken, String userName) в D:\VisualStudio\Term2019\Term3\Helpers\Integration\GitLabParser.cs:строка 30
+2020/02/08 19:41:30.957: System.Net.WebException: Удаленный сервер возвратил ошибку: (401) Несанкционированный.
+   в System.Net.HttpWebRequest.GetResponse()
+   в TErm.Helpers.Integration.Requests.get(String privateToken, String url) в D:\VisualStudio\Term2019\Term3\Helpers\Integration\Requests.cs:строка 26
+2020/02/08 19:41:31.040: System.NullReferenceException: Ссылка на объект не указывает на экземпляр объекта.
+   в TErm.Helpers.Integration.GitLabParser.getProjectsListByPrivateToken(String privateToken, String userName) в D:\VisualStudio\Term2019\Term3\Helpers\Integration\GitLabParser.cs:строка 30
+2020/02/08 19:43:02.524: System.Net.WebException: Удаленный сервер возвратил ошибку: (401) Несанкционированный.
+   в System.Net.HttpWebRequest.GetResponse()
+   в TErm.Helpers.Integration.Requests.get(String privateToken, String url) в D:\VisualStudio\Term2019\Term3\Helpers\Integration\Requests.cs:строка 26
+2020/02/08 19:43:02.613: System.NullReferenceException: Ссылка на объект не указывает на экземпляр объекта.
+   в TErm.Helpers.Integration.GitLabParser.getProjectsListByPrivateToken(String privateToken, String userName) в D:\VisualStudio\Term2019\Term3\Helpers\Integration\GitLabParser.cs:строка 30
