@@ -3,25 +3,112 @@
 @{
     ViewBag.Title = "Вход";
 }
-<div class="container">
-    @using (Html.BeginForm("Index", "Home", FormMethod.Post))
-    {
-        <div class="row">
-            <div class="col-12">
-                <div class="form-group">
-                    <label for="input-name">Введите имя пользователя</label>
-                    @Html.TextBoxFor(m => m.Name, new { @id = "input-name", @class = "form-control", @placeholder="Имя пользователя"})
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label for="input-token">Введите токен</label>
-                    @Html.TextBoxFor(m => m.Token, new { @id = "input-token", @class = "form-control", @placeholder = "Токен" })
-                </div>
-            </div>
-            <div class="col-12">
-                <input type="submit" value="Вход" class="btn btn-default form-control" />
+
+@using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @class = "index-form" }))
+{
+    <div class="row">
+        <div class="col-12 text-center">
+            <div class="form-group">
+                <label for="input-name">Введите имя пользователя</label>
+                @Html.TextBoxFor(m => m.Name, new { @id = "input-name", @class = "form-control", @placeholder = "Имя пользователя" })
             </div>
         </div>
+        <div class="col-12 text-center">
+            <div class="form-group">
+                <label for="input-token">Введите токен</label>
+                @Html.TextBoxFor(m => m.Token, new { @id = "input-token", @class = "form-control", @placeholder = "Токен" })
+            </div>
+        </div>
+        <div class="col-12 text-center">
+            <input type="submit" value="Вход" class="btn btn-primary form-control" />
+        </div>
+    </div>
+    @*<table cellpadding="0" cellspacing="0">
+            <tr height="35">
+                <td>Введите имя пользователя: </td>
+                <td>
+                    @Html.TextBoxFor(m => m.Name, new { @id = "name" })
+                </td>
+            </tr>
+            <tr height="35">
+                <td>Введите токен: </td>
+                <td>
+                    @Html.TextBoxFor(m => m.Token, new { @id = "token" })
+                </td>
+            </tr>
+            <tr height="35">
+                <td></td>
+                <td>
+                    <input type="submit" value="Вход" class="btn btn-default"/>
+                </td>
+            </tr>
+        </table>*@
+}
+
+@*<div style="padding-top: 20px;">
+        @using (Html.BeginForm("Index", "Home", FormMethod.Post))
+        {
+            <table cellpadding="0" cellspacing="0">
+                <tr height="35">
+                    <td>Введите имя пользователя: </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.Name)
+                    </td>
+                </tr>
+                <tr height="35">
+                    <td>Введите токен: </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.Token)
+                    </td>
+                </tr>
+                <tr height="35">
+                    <td>Введите id проекта для прогнозирования: </td>
+                    <td>
+                        @Html.TextBoxFor(m => m.IdProjectForPrognosis)
+                    </td>
+                </tr>
+                <tr height="35">
+                    <td></td>
+                    <td><input type="submit" value="Выполнить" style="border-radius:5px; color: #000000; background-color: #bdbdbd; width: 172px; height: 30px;" /></td>
+                </tr>
+            </table>
+        }
+    </div>
+    @if (Model != null && UserModel.Projects != null)
+    {
+        using (Html.BeginForm("Index", "Home", FormMethod.Post))
+        {
+            <div>
+                <h2></h2>
+                <table>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Estimate time</th>
+                        <th>Spent time</th>
+                    </tr>
+                    @foreach (ProjectModel project in UserModel.Projects)
+                    {
+                        <tr>
+                            <td>@project.id</td>
+                            @foreach (IssuesModel issue in project.issuesList)
+                            {
+                            <tr>
+                                <td></td>
+                                <td>@issue.title</td>
+                                <td>@issue.description</td>
+                                <td>@issue.time_stats.time_estimate</td>
+                                <td>@issue.time_stats.total_time_spent</td>
+                            </tr>
+                            }
+                            </tr>
+                    }
+                </table>
+            </div>
+        }
     }
-</div>
+    else
+    {
+        <h1>Список проектов пуст</h1>
+    }*@
