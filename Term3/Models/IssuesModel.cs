@@ -12,6 +12,7 @@ namespace TErm.Models
         public string title { get; set; }
         public string description { get; set; }
         public TimeStatsModel time_stats { get; set; }
+        public MilestoneModel milestone { get; set; }
 
         public IssuesModel(int id, string title, string description, double spendTime, double estimateTime)
         {

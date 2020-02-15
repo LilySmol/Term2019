@@ -238,6 +238,7 @@
     <Compile Include="Models\IssuesModel.cs" />
     <Compile Include="Models\LinksModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\MilestoneModel.cs" />
     <Compile Include="Models\ProjectModel.cs" />
     <Compile Include="Models\TimeStatsModel.cs" />
     <Compile Include="Models\UserModel.cs" />
