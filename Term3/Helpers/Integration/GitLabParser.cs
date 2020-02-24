@@ -23,8 +23,8 @@ namespace TErm.Helpers.Integration
         /// </summary>
         public List<ProjectModel> getProjectsListByPrivateToken(string privateToken, string userName)
         {
-            try
-            {
+            //try
+            //{
                 string response = get(privateToken, baseUrl + "/api/v4/users/" + userName + "/projects");
                 List<ProjectModel> projectList = JsonConvert.DeserializeObject<List<ProjectModel>>(response);
                 foreach (ProjectModel project in projectList)
@@ -32,12 +32,12 @@ namespace TErm.Helpers.Integration
                     project.issuesList = getIssuesListByPrivateToken(privateToken, project._links.issues + "?per_page=100");
                 }
                 return projectList;
-            }
-            catch (NullReferenceException e) 
-            {               
-                logger.Error(e.ToString());
-                return null;
-            }
+            //}
+            //catch (NullReferenceException e) 
+            //{               
+            //    logger.Error(e.ToString());
+            //    return null;
+            //}
         }
 
         /// <summary>

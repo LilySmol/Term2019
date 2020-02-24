@@ -82,6 +82,32 @@ namespace TErm.Helpers.DataBase
         }
 
         /// <summary>
+        /// Добавляет исполнителя 
+        /// </summary>
+        public static void insertAssigne(int assigneId, string name, string username, string state, string avatar_url, string web_url)
+        {
+            SQLiteConnection connection = new SQLiteConnection(connectionString);
+            SQLiteCommand command = new SQLiteCommand("INSERT INTO Assigne(assigneID, name, username, state, avatar_url, web_url) VALUES(" + assigneId + ", '" + name + "', '" + username + "', '" + state + "', '" + avatar_url + "', '" + web_url + "')", connection);
+            connection.Open();
+            command.ExecuteNonQuery();
+            connection.Close();
+            connection.Dispose();
+        }
+
+        /// <summary>
+        /// Добавляет исполнителя определенной задачи 
+        /// </summary>
+        public static void insertAssigneIssue(int issueId, int assigneId)
+        {
+            SQLiteConnection connection = new SQLiteConnection(connectionString);
+            SQLiteCommand command = new SQLiteCommand("INSERT INTO AssigneIssue(assigneID, issueID) VALUES(" + assigneId + ", " + issueId + ")", connection);
+            connection.Open();
+            command.ExecuteNonQuery();
+            connection.Close();
+            connection.Dispose();
+        }
+
+        /// <summary>
         /// Получить идентификатор пользователя по имени и токену
         /// </summary>
         public static int getUserId(string name, string token)
@@ -147,6 +173,19 @@ namespace TErm.Helpers.DataBase
             connection.Close();
             connection.Dispose();
             return issuesTable;
+        }
+
+        public static DataTable getAssigneeIssue()
+        {
+            DataTable assigneeIssuesTable = new DataTable();
+            SQLiteConnection connection = new SQLiteConnection(connectionString);
+            SQLiteCommand command = new SQLiteCommand("SELECT AssigneIssue.issueID, Assigne.assigneID, Assigne.name, Assigne.username, Assigne.state FROM AssigneIssue join Assigne on AssigneIssue.assigneID = Assigne.assigneID", connection);
+            connection.Open();
+            SQLiteDataReader reader = command.ExecuteReader();
+            assigneeIssuesTable.Load(reader);
+            connection.Close();
+            connection.Dispose();
+            return assigneeIssuesTable;
         }
 
         /// <summary>

@@ -11,6 +11,7 @@ using TErm.Helpers.Clustering;
 using TErm.Helpers.DataBase;
 using TErm.Models;
 using Term3.Helpers.DataBase;
+using Term3.Models;
 
 namespace Term3.Controllers
 {
@@ -29,21 +30,41 @@ namespace Term3.Controllers
             project.issuesList = new List<IssuesModel>();
             project.name = projectTitle;
             userId = userID;
+
+            DataTable assigneeTable = DataBaseRequest.getAssigneeIssue();
+
             double estimateTime = 0;
             double spentTime = 0;
             foreach (DataRow row in issuesTable.Rows)
             {
                 spentTime = Convert.ToDouble(row["spentTime"]) / 3600;
                 estimateTime = Convert.ToDouble(row["estimateTime"]) / 3600;
-                project.issuesList.Add(new IssuesModel(Convert.ToInt32(row["issueID"]), row["title"].ToString(), row["description"].ToString(), spentTime, estimateTime));
+
+                List<AssigneesModel> assignees = new List<AssigneesModel>();
+                foreach (DataRow assignee in assigneeTable.Rows)
+                {
+                    int issueId = Convert.ToInt32(assignee["issueID"]);
+                    int issueId2 = Convert.ToInt32(row["issueID"]);
+                    if (Convert.ToInt32(assignee["issueID"]) == Convert.ToInt32(row["issueID"])) {
+                        assignees.Add(new AssigneesModel(Convert.ToInt32(assignee["assigneID"]), assignee["name"].ToString(), assignee["username"].ToString(), assignee["state"].ToString()));
+                    }
+                }
+
+                project.issuesList.Add(new IssuesModel(Convert.ToInt32(row["issueID"]), row["title"].ToString(), row["description"].ToString(), spentTime, estimateTime, assignees));               
             }
+
             project.projectTime = DataBaseRequest.getProjectTime(project.name, userId);
+            
             return View(project);
         }
 
         [HttpPost]
-        public ActionResult Issues()
+        public ActionResult Issues(string action)
         {
+            if (action == "Подобрать исполнителей")
+            {
+                //подобрать исполнителей
+            }
             createClusters();
             prognosis();
             foreach (IssuesModel issue in project.issuesList)

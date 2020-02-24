@@ -29,14 +29,14 @@ namespace Term3.Controllers
         }
 
         [HttpPost]
-        public ActionResult Projects(ProjectModel projectModel)
-        { 
-            if (projectModel.name == null) //обновить проекты и задачи пользователя
+        public ActionResult Projects(ProjectModel projectModel, string action)
+        {
+            if (action == "Обновить проекты")
             {
                 DataBaseHelper.update(userId);
                 fillComboBox();
                 return View(project);
-            }      
+            }     
             return RedirectToAction("Issues", "Issue", new { userID = userId, projectTitle = projectModel.name });
         }
 

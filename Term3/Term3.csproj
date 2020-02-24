@@ -44,6 +44,42 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EP.Analyzer.Biblio">
+      <HintPath>C:\Users\NewUser\Downloads\DemoNer\EP.Sdk\EP.Analyzer.Biblio.dll</HintPath>
+    </Reference>
+    <Reference Include="EP.Analyzer.Decree">
+      <HintPath>C:\Users\NewUser\Downloads\DemoNer\EP.Sdk\EP.Analyzer.Decree.dll</HintPath>
+    </Reference>
+    <Reference Include="EP.Analyzer.Goods">
+      <HintPath>C:\Users\NewUser\Downloads\DemoNer\EP.Sdk\EP.Analyzer.Goods.dll</HintPath>
+    </Reference>
+    <Reference Include="EP.Analyzer.Location">
+      <HintPath>C:\Users\NewUser\Downloads\DemoNer\EP.Sdk\EP.Analyzer.Location.dll</HintPath>
+    </Reference>
+    <Reference Include="EP.Analyzer.Misc">
+      <HintPath>C:\Users\NewUser\Downloads\DemoNer\EP.Sdk\EP.Analyzer.Misc.dll</HintPath>
+    </Reference>
+    <Reference Include="EP.Analyzer.Organization">
+      <HintPath>C:\Users\NewUser\Downloads\DemoNer\EP.Sdk\EP.Analyzer.Organization.dll</HintPath>
+    </Reference>
+    <Reference Include="EP.Analyzer.Person">
+      <HintPath>C:\Users\NewUser\Downloads\DemoNer\EP.Sdk\EP.Analyzer.Person.dll</HintPath>
+    </Reference>
+    <Reference Include="EP.Analyzer.Semantic">
+      <HintPath>C:\Users\NewUser\Downloads\DemoNer\EP.Sdk\EP.Analyzer.Semantic.dll</HintPath>
+    </Reference>
+    <Reference Include="EP.Analyzer.Util">
+      <HintPath>C:\Users\NewUser\Downloads\DemoNer\EP.Sdk\EP.Analyzer.Util.dll</HintPath>
+    </Reference>
+    <Reference Include="EP.Core">
+      <HintPath>C:\Users\NewUser\Downloads\DemoNer\EP.Sdk\EP.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="EP.Explanatory">
+      <HintPath>C:\Users\NewUser\Downloads\DemoNer\EP.Sdk\EP.Explanatory.dll</HintPath>
+    </Reference>
+    <Reference Include="EP.Morphology">
+      <HintPath>C:\Users\NewUser\Downloads\DemoNer\EP.Sdk\EP.Morphology.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AI.Agent.Intercept, Version=2.0.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.2.0.6\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
       <Private>True</Private>
@@ -234,6 +270,7 @@
     <Compile Include="Helpers\Integration\IParsing.cs" />
     <Compile Include="Helpers\Integration\Requests.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AssigneesModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\IssuesModel.cs" />
     <Compile Include="Models\LinksModel.cs" />
@@ -320,6 +357,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resource.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\NewUser\Downloads\DemoNer\EP.Sdk\EP.Sdk.csproj">
+      <Project>{635573f4-6aa9-479d-a0a5-2294cb26e79f}</Project>
+      <Name>EP.Sdk</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

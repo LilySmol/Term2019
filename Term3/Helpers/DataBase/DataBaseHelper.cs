@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SQLite;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
@@ -8,6 +9,7 @@ using System.Web;
 using TErm.Helpers.DataBase;
 using TErm.Helpers.Integration;
 using TErm.Models;
+using Term3.Models;
 
 namespace Term3.Helpers.DataBase
 {
@@ -60,6 +62,22 @@ namespace Term3.Helpers.DataBase
                 foreach (IssuesModel issue in project.issuesList)
                 {
                     DataBaseRequest.insertIssue(issue.id, issue.iid, issue.title, issue.description, project.id, issue.time_stats.total_time_spent, issue.time_stats.time_estimate);
+                    if (issue.assignees != null)
+                    {
+                        foreach (AssigneesModel assignee in issue.assignees)
+                        {
+                            try
+                            {
+                                DataBaseRequest.insertAssigne(assignee.id, assignee.name, assignee.username, assignee.state, assignee.avatar_url, assignee.web_url);
+                            }
+                            catch (SQLiteException e)
+                            {
+                                e.ToString();
+                                //если уже есть исполнитель в бд
+                            }
+                            DataBaseRequest.insertAssigneIssue(issue.id, assignee.id);
+                        }
+                    }
                 }
             }            
         }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EP.Morph;
+using EP.Ner;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -59,8 +61,9 @@ namespace TErm.Helpers.Clustering
             List<string> dictionary = new List<string>();
             foreach (IssuesModel issue in issuesModel)
             {
-                List<string> issueWordsList = String.Concat(issue.title.ToLower(), " ", issue.description.ToLower()).Split(' ').ToList();
-                issueWordsList.RemoveAll(l => l.Length < 4 && l != "бд");
+                string issueText = String.Concat(issue.title.ToLower(), " ", issue.description.ToLower());               
+                List<string> issueWordsList = getHandledText(issueText);
+                //issueWordsList.RemoveAll(l => l.Length < 4 && l != "бд");
                 totalWordsList.AddRange(issueWordsList);
             }
             foreach (string word in totalWordsList)
@@ -71,6 +74,22 @@ namespace TErm.Helpers.Clustering
                 }
             }
             return dictionary.Distinct().ToList();
+        }
+
+        private List<string> getHandledText(string text)
+        {
+            List<string> textInInfinitiveList = new List<string>();
+            Sdk.Initialize(MorphLang.RU | MorphLang.EN);
+            var textHandled = ProcessorService.EmptyProcessor.Process(new SourceOfAnalysis(text));
+            for (Token t = textHandled.FirstToken; t != null; t = t.Next)
+            {
+                if (t.Morph.Class.IsAdjective || t.Morph.Class.IsAdverb || t.Morph.Class.IsConjunction || t.Morph.Class.IsPreposition)
+                {
+                    continue;
+                }
+                textInInfinitiveList.Add(t.GetNormalCaseText(null, true).ToLower());
+            }
+            return textInInfinitiveList;
         }
 
 

@@ -1,4 +1,5 @@
 ﻿@using TErm.Models
+@using Term3.Models
 @model ProjectModel
 
 @{
@@ -9,7 +10,8 @@
     <div>
         @using (Html.BeginForm("Issues", "Issue", FormMethod.Post))
         {
-            <input type="submit" value="Оценить" style="border-radius:5px; color: #000000; background-color: #bdbdbd; width: 172px; height: 30px;" />
+            <input type="submit" name="action" value="Оценить" style="border-radius:5px; color: #000000; background-color: #bdbdbd; width: 172px; height: 30px;" />
+            <input type="submit" name="action" value="Подобрать исполнителей" style="border-radius:5px; color: #000000; background-color: #bdbdbd; width: 172px; height: 30px;" />
         }
     </div>
     <div>
@@ -17,6 +19,7 @@
             <tr>
                 <th>Название</th>
                 <th>Описание</th>
+                <th>Исполнитель</th>
                 <th>Оценочное время</th>
                 <th>Потраченное время</th>
             </tr>
@@ -25,6 +28,22 @@
                 <tr>
                     <td>@issue.title</td>
                     <td>@issue.description</td>
+                    @{string assigneesString = ""; }
+                    @for (int i = 0; i < issue.assignees.Count; i++) {
+                        assigneesString += issue.assignees[i].username;
+                        if (i != issue.assignees.Count - 1)
+                        {
+                            assigneesString += ", ";
+                        }
+                    }
+                    @if (assigneesString != "")
+                    {
+                        <td>@assigneesString</td>
+                    }
+                    else
+                    {
+                        <td>-</td>
+                    }
                     <td>@issue.time_stats.time_estimate</td>
                     <td>@issue.time_stats.total_time_spent</td>
                 </tr>
