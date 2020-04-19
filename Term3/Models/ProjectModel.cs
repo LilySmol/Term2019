@@ -16,5 +16,13 @@ namespace TErm.Models
         public double projectTime { get; set; } //в секундах
 
         public List<SelectListItem> projectsList { get; set; }
+
+        public ProjectModel() { }
+
+        public ProjectModel(int id, string name)
+        {
+            this.id = id;
+            this.name = name;
+        }
     }
 }

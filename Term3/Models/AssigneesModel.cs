@@ -14,6 +14,10 @@ namespace Term3.Models
         public string avatar_url { get; set; }
         public string web_url { get; set; }
 
+        public double estimateTime { get; set; }
+
+        public AssigneesModel() { }
+
         public AssigneesModel(int id, string name, string username, string state)
         {
             this.id = id;

@@ -1,4 +1,6 @@
-﻿using NLog;
+﻿using EP.Morph;
+using EP.Ner;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,6 +11,7 @@ using System.Web;
 using System.Web.Mvc;
 using TErm.Helpers.Clustering;
 using TErm.Helpers.DataBase;
+using TErm.Helpers.Integration;
 using TErm.Models;
 using Term3.Helpers.DataBase;
 using Term3.Models;
@@ -24,11 +27,13 @@ namespace Term3.Controllers
         static int userId = 0;
 
         // GET: Issue
-        public ActionResult Issues(int userID, string projectTitle)
+        public ActionResult Issues(int userID, int projectId)
         {
-            DataTable issuesTable = DataBaseRequest.getIssues(userID, projectTitle);
+            Sdk.Initialize(MorphLang.RU | MorphLang.EN);
+
+            DataTable issuesTable = DataBaseRequest.getIssues(userID, projectId);
             project.issuesList = new List<IssuesModel>();
-            project.name = projectTitle;
+            project.id = projectId;
             userId = userID;
 
             DataTable assigneeTable = DataBaseRequest.getAssigneeIssue();
@@ -61,18 +66,27 @@ namespace Term3.Controllers
         [HttpPost]
         public ActionResult Issues(string action)
         {
-            if (action == "Подобрать исполнителей")
+            if (action == "Получить рекомендацию")
             {
-                //подобрать исполнителей
+                double projectEstimateTime = 0;
+                foreach (IssuesModel issue in project.issuesList)
+                {
+                    List<AssigneesModel> assignees = getAssignee(issue.id);
+                    issue.assignees = assignees;
+                    issue.time_stats.time_estimate = assignees[0].estimateTime;
+                    projectEstimateTime += assignees[0].estimateTime;
+                }
+                project.projectTime = projectEstimateTime;
+                //+попап
             }
-            createClusters();
-            prognosis();
-            foreach (IssuesModel issue in project.issuesList)
+            else
             {
-                double estimateTime = issue.time_stats.time_estimate * 3600;
-                DataBaseRequest.updateEstimateTime(issue.id, estimateTime);
+                int issueId = Convert.ToInt32(action);
+                List<AssigneesModel> assignees = getAssignee(issueId);
+                project.issuesList.First(item => item.id == issueId).assignees = assignees;
+                project.issuesList.First(item => item.id == issueId).time_stats.time_estimate = assignees[0].estimateTime;
             }
-            DataBaseRequest.updateProjectTime(project.name, project.projectTime, userId);
+            
             return View(project);
         }
 
@@ -104,5 +118,97 @@ namespace Term3.Controllers
             clustering.initializationClusterCenters();
             clustering.clustering();
         }
+
+        protected List<AssigneesModel> getAssignee(int issueId)
+        {
+            List<UserNounsModel> users = new List<UserNounsModel>();
+            GitLabParser gitLabParser = new GitLabParser();
+            InputDataConverter inputDataConverter = new InputDataConverter();
+
+            IssuesModel issue = project.issuesList.First(item => item.id == issueId);
+            List<string> nounsList = inputDataConverter.getHandledTextList(issue.title + " " + issue.description).Distinct().ToList();
+
+            DataTable user = DataBaseRequest.getUser(userId);
+            List<AssigneesModel> projectMembers = gitLabParser.getProjectMembers(user.Rows[0]["token"].ToString(), project.id);                 
+
+            foreach(AssigneesModel assignee in projectMembers)
+            {
+                List<IssuesModel> userIssues = gitLabParser.getAllIssues(user.Rows[0]["token"].ToString(), assignee.id);
+                List<IssuesModel> similarIssuesList = inputDataConverter.getSimilarIssues(userIssues, nounsList);
+                users.Add(new UserNounsModel(assignee.id, assignee.name, similarIssuesList));
+            }
+
+            return getAssignee(users);
+        }
+
+        protected List<AssigneesModel> getAssignee(List<UserNounsModel> userNouns)
+        {
+            List<AssigneesModel> assigneeList = new List<AssigneesModel>();
+            int maxIssuesCount = getMaxIssuesCount(userNouns);
+            foreach(UserNounsModel user in userNouns)
+            {
+                if (user.similarIssuesList.Count == maxIssuesCount)
+                {
+                    AssigneesModel assignee = new AssigneesModel(user.userId, "", user.userName, "");
+                    assignee.estimateTime = getEstimateIssueTime(user.similarIssuesList) / 3600;
+                    assigneeList.Add(assignee);
+                }
+            }
+            if (assigneeList.Count > 1)
+            {
+                return getAssigneesWithMinEstimateTime(assigneeList);
+            }
+            return assigneeList;
+        }   
+
+        protected List<AssigneesModel> getAssigneesWithMinEstimateTime(List<AssigneesModel> assigneeList)
+        {
+            double min = assigneeList[0].estimateTime;
+            AssigneesModel assigneeWithMinEstimateTime = assigneeList[0];
+            foreach (AssigneesModel assignee in assigneeList)
+            {
+                if (assignee.estimateTime < min)
+                {
+                    min = assignee.estimateTime;
+                    assigneeWithMinEstimateTime = assignee;
+                }
+            }
+            return new List<AssigneesModel>() { assigneeWithMinEstimateTime };
+        }
+
+        protected int getMaxIssuesCount(List<UserNounsModel> userNouns)
+        {
+            int maxCount = 0;
+            foreach(UserNounsModel user in userNouns)
+            {
+                if (user.similarIssuesList.Count > maxCount)
+                {
+                    maxCount = user.similarIssuesList.Count;
+                }
+            }
+            return maxCount;
+        }
+
+        protected double getEstimateIssueTime(List<IssuesModel> similarIssuesList)
+        {
+            double sum = 0;
+            int count = 0;
+            foreach (IssuesModel issue in similarIssuesList)
+            {
+                sum += issue.time_stats.total_time_spent;
+                count++;
+            }
+            return (double)sum / count;
+        }
+
+    // оценить проект целиком (кластеризация)
+    //    createClusters();
+    //    prognosis();
+    //    foreach (IssuesModel issue in project.issuesList)
+    //    {
+    //        double estimateTime = issue.time_stats.time_estimate * 3600;
+    //        DataBaseRequest.updateEstimateTime(issue.id, estimateTime);
+    //    }
+    //    DataBaseRequest.updateProjectTime(project.name, project.projectTime, userId);
     }
 }

@@ -10,12 +10,16 @@ using Newtonsoft.Json.Linq;
 using TErm.Helpers;
 using NLog;
 using System.Web.UI;
+using System.Resources;
+using System.Reflection;
+using Term3.Models;
 
 namespace TErm.Helpers.Integration
 {
     public class GitLabParser: Requests, IParsing
     {
-        public string baseUrl { get; set; }
+        static ResourceManager resource = new ResourceManager("TErm3.Resource", Assembly.GetExecutingAssembly());
+        public string baseUrl = resource.GetString("baseUrl");
         private Logger logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
@@ -48,6 +52,26 @@ namespace TErm.Helpers.Integration
             string response = get(privateToken, linkIssues);
             List<IssuesModel> issuesList = JsonConvert.DeserializeObject<List<IssuesModel>>(response);
             return issuesList;
+        }
+
+        /// <summary>
+        /// Возвращает список задач по privateToken и ссылке на задачи проекта.
+        /// </summary>
+        public List<IssuesModel> getAllIssues(string privateToken, int userId)
+        {
+            string response = get(privateToken, baseUrl + "/api/v4/issues?assignee_id=" + userId);
+            List<IssuesModel> issuesList = JsonConvert.DeserializeObject<List<IssuesModel>>(response);
+            return issuesList;
+        }
+
+        /// <summary>
+        /// Возвращает список участников проекта.
+        /// </summary>
+        public List<AssigneesModel> getProjectMembers(string privateToken, int projectId)
+        {
+            string response = get(privateToken, baseUrl + "/api/v4/projects/" + projectId + "/members");
+            List<AssigneesModel> projectList = JsonConvert.DeserializeObject<List<AssigneesModel>>(response);
+            return projectList;
         }
     }
 }

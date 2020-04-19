@@ -160,13 +160,13 @@ namespace TErm.Helpers.DataBase
         }
 
         /// <summary>
-        /// Получить задачи по идентификатору пользователя и имени проекта
+        /// Получить задачи по идентификатору пользователя и id проекта
         /// </summary>
-        public static DataTable getIssues(int userId, string projectName)
+        public static DataTable getIssues(int userId, int projectId)
         {
             DataTable issuesTable = new DataTable();
             SQLiteConnection connection = new SQLiteConnection(connectionString);
-            SQLiteCommand command = new SQLiteCommand("SELECT Issue.title, Issue.description, Issue.spentTime, Issue.estimateTime, Issue.issueID FROM Project join Issue on Project.projectID = Issue.projectID WHERE Project.userID = " + userId + " AND Project.name = '" + projectName + "'", connection);
+            SQLiteCommand command = new SQLiteCommand("SELECT Issue.title, Issue.description, Issue.spentTime, Issue.estimateTime, Issue.issueID FROM Project join Issue on Project.projectID = Issue.projectID WHERE Project.userID = " + userId + " AND Project.projectID = '" + projectId + "'", connection);
             connection.Open();
             SQLiteDataReader reader = command.ExecuteReader();
             issuesTable.Load(reader);

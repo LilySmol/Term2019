@@ -62,7 +62,7 @@ namespace TErm.Helpers.Clustering
             foreach (IssuesModel issue in issuesModel)
             {
                 string issueText = String.Concat(issue.title.ToLower(), " ", issue.description.ToLower());               
-                List<string> issueWordsList = getHandledText(issueText);
+                List<string> issueWordsList = getHandledTextList(issueText);
                 //issueWordsList.RemoveAll(l => l.Length < 4 && l != "бд");
                 totalWordsList.AddRange(issueWordsList);
             }
@@ -76,14 +76,14 @@ namespace TErm.Helpers.Clustering
             return dictionary.Distinct().ToList();
         }
 
-        private List<string> getHandledText(string text)
+        public List<string> getHandledTextList(string text)
         {
             List<string> textInInfinitiveList = new List<string>();
             Sdk.Initialize(MorphLang.RU | MorphLang.EN);
             var textHandled = ProcessorService.EmptyProcessor.Process(new SourceOfAnalysis(text));
             for (Token t = textHandled.FirstToken; t != null; t = t.Next)
             {
-                if (t.Morph.Class.IsAdjective || t.Morph.Class.IsAdverb || t.Morph.Class.IsConjunction || t.Morph.Class.IsPreposition)
+                if (t.Morph.Class.IsAdjective || t.Morph.Class.IsAdverb || t.Morph.Class.IsConjunction || t.Morph.Class.IsPreposition || t.Morph.Class.IsVerb)
                 {
                     continue;
                 }
@@ -92,6 +92,43 @@ namespace TErm.Helpers.Clustering
             return textInInfinitiveList;
         }
 
+        public string getHandledTextString(string text)
+        {
+            string textInInfinitiveString = "";
+            //Sdk.Initialize(MorphLang.RU | MorphLang.EN);
+            var textHandled = ProcessorService.EmptyProcessor.Process(new SourceOfAnalysis(text));
+            for (Token t = textHandled.FirstToken; t != null; t = t.Next)
+            {
+                if (t.Morph.Class.IsAdjective || t.Morph.Class.IsAdverb || t.Morph.Class.IsConjunction || t.Morph.Class.IsPreposition || t.Morph.Class.IsVerb)
+                {
+                    continue;
+                }
+                string noun = t.GetNormalCaseText(null, true).ToLower();
+                if (!textInInfinitiveString.Contains(noun)){
+                    textInInfinitiveString += noun + " ";
+                }               
+            }
+            return textInInfinitiveString;
+        }
 
+        public List<IssuesModel> getSimilarIssues(List<IssuesModel> issues, List<string> nounsList)
+        {
+            List<IssuesModel> similarIssuesList = new List<IssuesModel>();
+            
+            foreach (IssuesModel issue in issues)
+            {
+                string handledIssueNounsString = getHandledTextString(issue.title + " " + issue.description);
+                for (int i = 0; i < nounsList.Count; i++)
+                {
+                    if (handledIssueNounsString.Contains(nounsList[i]))
+                    {
+                        similarIssuesList.Add(issue);
+                        break;
+                    }
+                }
+            }
+
+            return similarIssuesList;
+        }
     }
 }

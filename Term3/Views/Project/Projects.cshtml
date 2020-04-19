@@ -1,31 +1,24 @@
-﻿@using TErm.Models
-@model ProjectModel
+﻿@using Term3.Models
+@model ProjectListModel
 @{
     ViewBag.Title = "Проекты";
 }
-
-@if (Model.issuesList == null)
-{
 <div>
     @using (Html.BeginForm("Projects", "Project", FormMethod.Post))
     {
-        <table>
-            <tr>
-                <td>
-                    Проекты:
-                </td>
-                <td>
-                    @Html.DropDownListFor(m => m.name, Model.projectsList, "Выбрать проект")
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <input type="submit" name="action" value="Открыть" style="border-radius:5px; color: #000000; background-color: #bdbdbd; width: 172px; height: 30px;"/>
-                    <input type="submit" name="action" value="Обновить проекты" style="border-radius:5px; color: #000000; background-color: #bdbdbd; width: 172px; height: 30px;" />
-                </td>
-            </tr>
-        </table>
-    }
+        <div class="projects-block">
+            <table class="projects-table">
+                <tr>
+                    <th>Название</th>
+                </tr>
+                @foreach (var project in Model.projects)
+                {
+                    <tr>
+                        <td>@project.name</td>
+                        <td><button type="submit" name="action" value="@project.id">Выбрать проект</button></td>
+                    </tr>
+                 }
+            </table>
+        </div>
+      }
 </div>
-}

@@ -10,50 +10,50 @@
     <div>
         @using (Html.BeginForm("Issues", "Issue", FormMethod.Post))
         {
-            <input type="submit" name="action" value="Оценить" style="border-radius:5px; color: #000000; background-color: #bdbdbd; width: 172px; height: 30px;" />
-            <input type="submit" name="action" value="Подобрать исполнителей" style="border-radius:5px; color: #000000; background-color: #bdbdbd; width: 172px; height: 30px;" />
+            <input type="submit" name="action" value="Получить рекомендацию" style="border-radius:5px; color: #000000; background-color: #bdbdbd; width: 172px; height: 30px;" />           
+            <div>
+                <table class="issues-table">
+                    <tr>
+                        <th>Название</th>
+                        <th>Описание</th>
+                        <th>Исполнитель</th>
+                        <th>Оценочное время</th>
+                        <th>Потраченное время</th>
+                        <th></th>
+                    </tr>
+                    @foreach (IssuesModel issue in Model.issuesList)
+                    {
+                        <tr>
+                            <td>@issue.title</td>
+                            <td>@issue.description</td>
+                            @{string assigneesString = ""; }
+                            @for (int i = 0; i < issue.assignees.Count; i++)
+                            {
+                                assigneesString += issue.assignees[i].username;
+                                if (i != issue.assignees.Count - 1)
+                                {
+                                    assigneesString += ", ";
+                                }
+                            }
+                            @if (assigneesString != "")
+                            {
+                                <td>@assigneesString</td>
+                            }
+                            else
+                            {
+                                <td>-</td>
+                            }
+                            <td>@issue.time_stats.time_estimate</td>
+                            <td>@issue.time_stats.total_time_spent</td>
+                            <td><button type="submit" name="action" value="@issue.id">Выбрать исполнителя</button></td>
+                        </tr>
+                    }
+                    <tr>
+                        <td>Общее время проекта</td>
+                        <td colspan="5"><b>@Model.projectTime</b></td>
+                    </tr>
+                </table>
+            </div>
         }
-    </div>
-    <div>
-        <table>
-            <tr>
-                <th>Название</th>
-                <th>Описание</th>
-                <th>Исполнитель</th>
-                <th>Оценочное время</th>
-                <th>Потраченное время</th>
-            </tr>
-            @foreach (IssuesModel issue in Model.issuesList)
-            {
-                <tr>
-                    <td>@issue.title</td>
-                    <td>@issue.description</td>
-                    @{string assigneesString = ""; }
-                    @for (int i = 0; i < issue.assignees.Count; i++) {
-                        assigneesString += issue.assignees[i].username;
-                        if (i != issue.assignees.Count - 1)
-                        {
-                            assigneesString += ", ";
-                        }
-                    }
-                    @if (assigneesString != "")
-                    {
-                        <td>@assigneesString</td>
-                    }
-                    else
-                    {
-                        <td>-</td>
-                    }
-                    <td>@issue.time_stats.time_estimate</td>
-                    <td>@issue.time_stats.total_time_spent</td>
-                </tr>
-            }
-            <tr>
-                <td>Общее время проекта</td>
-                <td></td>
-                <td>@Model.projectTime</td>
-                <td></td>
-            </tr>
-        </table>
     </div>
 </div>

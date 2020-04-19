@@ -14,9 +14,7 @@ using Term3.Models;
 namespace Term3.Helpers.DataBase
 {
     public class DataBaseHelper
-    {
-        static ResourceManager resource = new ResourceManager("TErm3.Resource", Assembly.GetExecutingAssembly());
-
+    {       
         /// <summary>
         /// Обновляет проекты и задачи пользователя
         /// </summary>
@@ -26,7 +24,7 @@ namespace Term3.Helpers.DataBase
             DataTable issues = new DataTable();
             foreach (DataRow project in projects.Rows)
             {
-                issues = DataBaseRequest.getIssues(userId, project["name"].ToString());
+                issues = DataBaseRequest.getIssues(userId, Convert.ToInt32(project["projectId"]));
                 foreach (DataRow issue in issues.Rows)
                 {
                     DataBaseRequest.deleteIssue(Convert.ToInt32(issue["issueID"]));
@@ -42,7 +40,6 @@ namespace Term3.Helpers.DataBase
         public static List<ProjectModel> getProjectsList(string token, string user)
         {
             GitLabParser gitLabParser = new GitLabParser();
-            gitLabParser.baseUrl = resource.GetString("baseUrl");
             return gitLabParser.getProjectsListByPrivateToken(token, user);
         }
 

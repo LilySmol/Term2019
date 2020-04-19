@@ -12,45 +12,46 @@ using TErm.Helpers.DataBase;
 using TErm.Helpers.Integration;
 using TErm.Models;
 using Term3.Helpers.DataBase;
+using Term3.Models;
 
 namespace Term3.Controllers
 {
     public class ProjectController : Controller
     {
         private static int userId = 0;        
-        private ProjectModel project = new ProjectModel();  
+        private ProjectListModel projects = new ProjectListModel();  
 
         // GET: Project
         public ActionResult Projects(int userID)
         {
             userId = userID;
-            fillComboBox();
-            return View(project);
+            fillProjects();
+            return View(projects);
         }
 
         [HttpPost]
-        public ActionResult Projects(ProjectModel projectModel, string action)
+        public ActionResult Projects(ProjectListModel projects, string action)
         {
             if (action == "Обновить проекты")
             {
                 DataBaseHelper.update(userId);
-                fillComboBox();
-                return View(project);
+                fillProjects();
+                return View(projects);
             }     
-            return RedirectToAction("Issues", "Issue", new { userID = userId, projectTitle = projectModel.name });
+            return RedirectToAction("Issues", "Issue", new { userID = userId, projectId = action });
         }
 
-        private void fillComboBox()
+        private void fillProjects()
         {
+            projects.projects = new List<ProjectModel>();
             DataTable projectsTable = new DataTable();
             if (userId != 0) //пользователь есть в базе данных
             {
                 projectsTable = DataBaseRequest.getProjects(userId);
             }
-            project.projectsList = new List<SelectListItem>();
             for (int i = 0; i < projectsTable.Rows.Count; i++)
             {
-                project.projectsList.Add(new SelectListItem { Text = projectsTable.Rows[i]["name"].ToString(), Value = projectsTable.Rows[i]["name"].ToString() });
+                projects.projects.Add(new ProjectModel(Convert.ToInt32(projectsTable.Rows[i]["projectID"]), projectsTable.Rows[i]["name"].ToString()));
             }
         }
     }
