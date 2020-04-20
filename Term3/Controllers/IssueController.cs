@@ -7,8 +7,10 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI;
 using TErm.Helpers.Clustering;
 using TErm.Helpers.DataBase;
 using TErm.Helpers.Integration;
@@ -67,24 +69,40 @@ namespace Term3.Controllers
         public ActionResult Issues(string action)
         {
             if (action == "Получить рекомендацию")
-            {
+            {            
                 double projectEstimateTime = 0;
+                List<string> assigneesList = new List<string>();
+                string recomendation = "Наиболее подходящими разработчиками, способными выполнить все задачи проекта за минимальное время являются: ";
                 foreach (IssuesModel issue in project.issuesList)
                 {
                     List<AssigneesModel> assignees = getAssignee(issue.id);
                     issue.assignees = assignees;
-                    issue.time_stats.time_estimate = assignees[0].estimateTime;
-                    projectEstimateTime += assignees[0].estimateTime;
+                    if (assignees.Count > 0)
+                    {
+                        issue.time_stats.time_estimate = assignees[0].estimateTime;
+                        projectEstimateTime += assignees[0].estimateTime;
+                        assigneesList.Add(assignees[0].username);
+                    }
                 }
                 project.projectTime = projectEstimateTime;
-                //+попап
+
+                foreach (string assignee in assigneesList.Distinct().ToList())
+                {
+                    recomendation += assignee + " ";
+                }
+                recomendation += "Оценочное время выполнения проекта в таком случае: " + projectEstimateTime;
+
+                Response.Write("<script>alert('"+ recomendation +"')</script>");
             }
             else
-            {
+            {            
                 int issueId = Convert.ToInt32(action);
                 List<AssigneesModel> assignees = getAssignee(issueId);
                 project.issuesList.First(item => item.id == issueId).assignees = assignees;
-                project.issuesList.First(item => item.id == issueId).time_stats.time_estimate = assignees[0].estimateTime;
+                if (assignees.Count > 0)
+                {
+                    project.issuesList.First(item => item.id == issueId).time_stats.time_estimate = assignees[0].estimateTime;
+                }
             }
             
             return View(project);
@@ -135,7 +153,10 @@ namespace Term3.Controllers
             {
                 List<IssuesModel> userIssues = gitLabParser.getAllIssues(user.Rows[0]["token"].ToString(), assignee.id);
                 List<IssuesModel> similarIssuesList = inputDataConverter.getSimilarIssues(userIssues, nounsList);
-                users.Add(new UserNounsModel(assignee.id, assignee.name, similarIssuesList));
+                if (similarIssuesList.Count > 0)
+                {
+                    users.Add(new UserNounsModel(assignee.id, assignee.name, similarIssuesList));
+                }
             }
 
             return getAssignee(users);
@@ -201,14 +222,14 @@ namespace Term3.Controllers
             return (double)sum / count;
         }
 
-    // оценить проект целиком (кластеризация)
-    //    createClusters();
-    //    prognosis();
-    //    foreach (IssuesModel issue in project.issuesList)
-    //    {
-    //        double estimateTime = issue.time_stats.time_estimate * 3600;
-    //        DataBaseRequest.updateEstimateTime(issue.id, estimateTime);
-    //    }
-    //    DataBaseRequest.updateProjectTime(project.name, project.projectTime, userId);
+        // оценить проект целиком (кластеризация)
+        //    createClusters();
+        //    prognosis();
+        //    foreach (IssuesModel issue in project.issuesList)
+        //    {
+        //        double estimateTime = issue.time_stats.time_estimate * 3600;
+        //        DataBaseRequest.updateEstimateTime(issue.id, estimateTime);
+        //    }
+        //    DataBaseRequest.updateProjectTime(project.name, project.projectTime, userId);
     }
 }
