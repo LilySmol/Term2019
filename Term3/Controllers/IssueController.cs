@@ -71,8 +71,9 @@ namespace Term3.Controllers
             if (action == "Получить рекомендацию")
             {            
                 double projectEstimateTime = 0;
+                bool emptyAssigneeExist = false;
                 List<string> assigneesList = new List<string>();
-                string recomendation = "Наиболее подходящими разработчиками, способными выполнить все задачи проекта за минимальное время являются: ";
+                string recomendation;
                 foreach (IssuesModel issue in project.issuesList)
                 {
                     List<AssigneesModel> assignees = getAssignee(issue.id);
@@ -83,15 +84,31 @@ namespace Term3.Controllers
                         projectEstimateTime += assignees[0].estimateTime;
                         assigneesList.Add(assignees[0].username);
                     }
+                    else
+                    {
+                        emptyAssigneeExist = true;
+                    }
                 }
                 project.projectTime = projectEstimateTime;
 
+
+                if (emptyAssigneeExist)
+                {
+                    recomendation = "Из участников данного проекта невозможно сформировать полную команду. Рекомендованые к исполнению задач разработчики: ";
+                }
+                else
+                {
+                    recomendation = "Наиболее подходящими разработчиками, способными выполнить все задачи проекта за минимальное время являются: ";
+                }
                 foreach (string assignee in assigneesList.Distinct().ToList())
                 {
-                    recomendation += assignee + " ";
+                    recomendation += assignee + ", ";
                 }
-                recomendation += "Оценочное время выполнения проекта в таком случае: " + projectEstimateTime;
-
+                if (!emptyAssigneeExist)
+                {
+                    recomendation += "Оценочное время выполнения проекта в таком случае: " + projectEstimateTime + " часов";
+                }
+                               
                 Response.Write("<script>alert('"+ recomendation +"')</script>");
             }
             else
@@ -171,7 +188,7 @@ namespace Term3.Controllers
                 if (user.similarIssuesList.Count == maxIssuesCount)
                 {
                     AssigneesModel assignee = new AssigneesModel(user.userId, "", user.userName, "");
-                    assignee.estimateTime = getEstimateIssueTime(user.similarIssuesList) / 3600;
+                    assignee.estimateTime = Math.Round(getEstimateIssueTime(user.similarIssuesList) / 3600, 2);
                     assigneeList.Add(assignee);
                 }
             }
@@ -221,6 +238,8 @@ namespace Term3.Controllers
             }
             return (double)sum / count;
         }
+
+
 
         // оценить проект целиком (кластеризация)
         //    createClusters();

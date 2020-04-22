@@ -36,8 +36,8 @@ namespace Term3.Controllers
             {
                 DataBaseHelper.update(userId);
                 fillProjects();
-                return View(projects);
-            }     
+                return View(this.projects);
+            }
             return RedirectToAction("Issues", "Issue", new { userID = userId, projectId = action });
         }
 
